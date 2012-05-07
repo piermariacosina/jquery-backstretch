@@ -1,6 +1,6 @@
 /*
  * jQuery Backstretch
- * Version 1.2.6
+ * Version 1.2.7
  * http://srobbin.com/jquery-plugins/jquery-backstretch/
  *
  * Add a dynamically-resized background image to the page
@@ -10,16 +10,15 @@
  * https://raw.github.com/srobbin/jquery-backstretch/master/LICENSE.txt
  * 
 */
-
 ;(function($) {
 
-    $.backstretch = function(src, options, callback) {
+    $.backstretch = function(where, src, options, callback) {
         var defaultSettings = {
             centeredX: true         // Should we center the image on the X axis?
           , centeredY: true         // Should we center the image on the Y axis?
           , speed: 0                // fadeIn speed for background after image loads (e.g. "fast" or 500)
         }
-      , $container = $("#backstretch")
+      , $container = $('#'+where)
       , settings = $container.data("settings") || defaultSettings // If this has been called once before, use the old settings as the default
       , existingSettings = $container.data('settings')
       , rootElement, supportsFixedPosition, useWindowInnerHeight
@@ -107,8 +106,7 @@
                 
                 // If this is the first time that backstretch is being called
                 if($container.length == 0) {
-                    $container = $("<div />").attr("id", "backstretch")
-                                             .css({left: 0, top: 0, position: supportsFixedPosition ? "fixed" : "absolute", overflow: "hidden", zIndex: -999999, margin: 0, padding: 0, height: "100%", width: "100%"});
+                    $container = $().css({left: 0, top: 0, position: supportsFixedPosition ? "fixed" : "absolute", overflow: "hidden", zIndex: -999999, margin: 0, padding: 0, height: "100%", width: "100%"});
                 } else {
                     // Prepare to delete any old images
                     $container.find("img").addClass("deleteable");
@@ -134,10 +132,6 @@
                                   })
                                   .appendTo($container);
                  
-                // Append the container to the body, if it's not already there
-                if($("body #backstretch").length == 0) {
-                    $("body").append($container);
-                }
                 
                 // Attach the settings
                 $container.data("settings", settings);
@@ -176,6 +170,7 @@
 
                 $container.css({width: rootWidth, height: rootHeight})
                           .find("img:not(.deleteable)").css({width: bgWidth, height: bgHeight}).css(bgCSS);
+                
             } catch(err) {
                 // IE7 seems to trigger _adjustBG before the image is loaded.
                 // This try/catch block is a hack to let it fail gracefully.
